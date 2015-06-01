@@ -49,10 +49,6 @@ sunxi_disp_t *sunxi_disp_init(const char *device, void *xserver_fbmem)
 	int gfx_layer_size;
 	int ovl_layer_size;
 
-	/* use /dev/fb0 by default */
-	if (!device)
-		device = "/dev/fb0";
-
 	if (strcmp(device, "/dev/fb0") == 0) {
 		ctx->fb_id = 0;
 	}
@@ -64,10 +60,7 @@ sunxi_disp_t *sunxi_disp_init(const char *device, void *xserver_fbmem)
 		free(ctx);
 		return NULL;
 	}
-#if 1 //Sugar
-	/* on A80 for HDMI */
-	ctx->fb_id = 1;
-#endif
+		ctx->fb_id = 1;
 
 	/* store the already existing mapping done by xserver */
 	ctx->xserver_fbmem = xserver_fbmem;
@@ -152,7 +145,19 @@ sunxi_disp_t *sunxi_disp_init(const char *device, void *xserver_fbmem)
 	//    free(ctx);
 	//    return NULL;
 	//}
-
+	int ret;
+	uint32_t vga_args[4];
+	vga_args[0] = 0;
+        ret = ioctl(ctx->fd_disp, DISP_CMD_IS_VGA_USED,&vga_args);
+	if(ret == 1){
+		 ctx->fb_id = 0;
+	}
+	else if (ret < 0){
+			close(ctx->fd_fb);
+			close(ctx->fd_disp);
+			free(ctx);
+			return NULL;
+	}
 	ctx->fd_g2d = open("/dev/g2d", O_RDWR);
 
 	ctx->blt2d.self = ctx;
@@ -168,6 +173,7 @@ sunxi_disp_t *sunxi_disp_init(const char *device, void *xserver_fbmem)
 	args[2] = (uintptr_t)&layer_win;
 	if (ioctl(ctx->fd_disp, DISP_CMD_LAYER_GET_INFO, &args) < 0)
 		return NULL;
+
 	args[0] = ctx->fb_id;
 	args[1] = 1;
 	args[2] = (uintptr_t)&layer_win;

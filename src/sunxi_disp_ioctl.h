@@ -142,6 +142,7 @@ typedef enum
 
 typedef enum
 {
+    DISP_TV_MOD_NONE                = -1,
 	DISP_TV_MOD_480I                = 0,
 	DISP_TV_MOD_576I                = 1,
 	DISP_TV_MOD_480P                = 2,
@@ -169,7 +170,10 @@ typedef enum
 	DISP_TV_MOD_3840_2160P_30HZ     = 0x1c,
 	DISP_TV_MOD_3840_2160P_25HZ     = 0x1d,
 	DISP_TV_MOD_3840_2160P_24HZ     = 0x1e,
-	DISP_TV_MODE_NUM                = 0x1f,
+	DISP_TV_MOD_VGA_H1024_V768		= 0x1f,
+	DISP_TV_MOD_VGA_H800_V600		= 0x20,
+	DISP_TV_MOD_VGA_H1400_V1050 	= 0x21,
+	DISP_TV_MODE_NUM                = 0x22,
 }disp_tv_mode;
 
 typedef enum
@@ -789,6 +793,14 @@ typedef enum tag_DISP_CMD
 	DISP_CMD_LCD_USER_DEFINED_FUNC = 0x10e,
 	DISP_CMD_LCD_CHECK_OPEN_FINISH = 0x10f,
 	DISP_CMD_LCD_CHECK_CLOSE_FINISH = 0x110,
+
+	//----vga----
+    DISP_CMD_VGA_ENABLE             = 0x120,
+    DISP_CMD_VGA_DISABLE            = 0x121,
+    DISP_CMD_VGA_SET_MODE            = 0x122,
+    DISP_CMD_VGA_GET_MODE            = 0x123,
+    DISP_CMD_IS_VGA_USED           = 0x124,
+ //   DISP_CMD_VGA_SUPPORT_MODE       = 0x124,
 
 	//---- capture ---
 	DISP_CMD_CAPTURE_SCREEN = 0x140,//caputre screen and scaler to dram
